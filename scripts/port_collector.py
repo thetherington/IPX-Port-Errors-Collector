@@ -66,6 +66,7 @@ class PortCollector:
                 return json.loads(response.text)
 
         except Exception as error:
+            print(error)
             return error
 
     def collect(self):
