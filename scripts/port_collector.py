@@ -74,9 +74,9 @@ class PortCollector:
 
         results = self.fetch(self.parameters)
 
-        try:
+        ports = {}
 
-            ports = {}
+        try:
 
             for result in results["result"]["parameters"]:
 
@@ -115,10 +115,12 @@ class PortCollector:
 
                     ports[_instance]["as_id"].append(result["id"])
 
-            print(json.dumps(ports, indent=1))
-
         except Exception as error:
             print(error)
+
+        for _, params in ports.items():
+
+            yield params
 
 
 def main():
@@ -127,7 +129,9 @@ def main():
 
     ipx = PortCollector(**params)
 
-    ipx.collect()
+    for port in ipx.collect():
+
+        print(json.dumps(port, indent=1))
 
 
 if __name__ == "__main__":
