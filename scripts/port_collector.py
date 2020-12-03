@@ -76,11 +76,9 @@ class PortCollector:
 
         try:
 
-            params = results["result"]["parameters"]
-
             ports = {}
 
-            for result in params:
+            for result in results["result"]["parameters"]:
 
                 # seperate "240.1@i" to "1@i"
                 _id = result["id"].split(".")[1]
