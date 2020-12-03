@@ -11,6 +11,7 @@ class PortCollector:
 
         self.input_error = {"id": "926.<replace>@i", "type": "integer", "name": "Input Errors"}
         self.output_error = {"id": "931.<replace>@i", "type": "integer", "name": "Output Errors"}
+        self.port_label = {"id": "344.<replace>@s", "type": "string", "name": "Label"}
 
         self.parameters = []
 
@@ -23,7 +24,7 @@ class PortCollector:
 
                 for port in value:
 
-                    for template in [self.input_error, self.output_error]:
+                    for template in [self.input_error, self.output_error, self.port_label]:
 
                         template_copy = copy.deepcopy(template)
                         template_copy["id"] = template_copy["id"].replace(
