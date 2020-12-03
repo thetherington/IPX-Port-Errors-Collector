@@ -78,8 +78,46 @@ class PortCollector:
 
             params = results["result"]["parameters"]
 
+            ports = {}
+
             for result in params:
-                print(result)
+
+                # seperate "240.1@i" to "1@i"
+                _id = result["id"].split(".")[1]
+
+                # split the instance and type notation, then convert the
+                # instance back to base 1 for port number
+                _instance, _type = _id.split("@")
+
+                _instance = int(_instance)
+                _instance += 1
+
+                # convert integer to long notation since these numbers can be big
+                _type = "l" if _type == "i" else _type
+
+                # create port key and object if doesn't exist, otherwise update existing key/object
+                if _instance not in ports.keys():
+
+                    ports.update(
+                        {
+                            _instance: {
+                                _type
+                                + "_"
+                                + result["name"].lower().replace(" ", "_"): result["value"],
+                                "as_id": [result["id"]],
+                            }
+                        }
+                    )
+
+                else:
+
+                    ports[_instance].update(
+                        {_type + "_" + result["name"].lower().replace(" ", "_"): result["value"]}
+                    )
+
+                    ports[_instance]["as_id"].append(result["id"])
+
+            print(json.dumps(ports, indent=1))
 
         except Exception as error:
             print(error)
