@@ -103,6 +103,7 @@ class PortCollector:
                                 + "_"
                                 + result["name"].lower().replace(" ", "_"): result["value"],
                                 "as_id": [result["id"]],
+                                "i_port": _instance,
                             }
                         }
                     )
