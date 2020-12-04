@@ -15,6 +15,8 @@ class PortCollector:
 
         self.parameters = []
 
+        self.port_store = {}
+
         for key, value in kwargs.items():
 
             if "address" in key and value:
@@ -120,6 +122,28 @@ class PortCollector:
             print(error)
 
         for _, params in ports.items():
+
+            port_key = params["i_port"]
+
+            # if port object exists in port_store, then update ports dict with delta values
+            if port_key in self.port_store.keys():
+
+                params.update(
+                    {
+                        "l_input_errors_delta": params["l_input_errors"]
+                        - self.port_store[port_key]["l_input_errors"],
+                        "l_output_errors_delta": params["l_output_errors"]
+                        - self.port_store[port_key]["l_output_errors"],
+                    }
+                )
+
+                # update object in port_store with latest values
+                self.port_store[port_key].update(params)
+
+            else:
+
+                # create a port object into port_store keyed by the port number
+                self.port_store.update({port_key: params})
 
             yield params
 
