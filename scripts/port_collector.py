@@ -93,15 +93,18 @@ class PortCollector:
                 # convert integer to long notation since these numbers can be big
                 _type = "l" if _type == "i" else _type
 
+                # lowercase the metric label and replace a space with undscore
+                # then prefix the type notiation to the key string
+                key = result["name"].lower().replace(" ", "_")
+                key = "{}_{}".format(_type, key)
+
                 # create port key and object if doesn't exist, otherwise update existing key/object
                 if _instance not in ports.keys():
 
                     ports.update(
                         {
                             _instance: {
-                                _type
-                                + "_"
-                                + result["name"].lower().replace(" ", "_"): result["value"],
+                                key: result["value"],
                                 "as_id": [result["id"]],
                                 "i_port": _instance,
                             }
@@ -110,10 +113,7 @@ class PortCollector:
 
                 else:
 
-                    ports[_instance].update(
-                        {_type + "_" + result["name"].lower().replace(" ", "_"): result["value"]}
-                    )
-
+                    ports[_instance].update({key: result["value"]})
                     ports[_instance]["as_id"].append(result["id"])
 
         except Exception as error:
