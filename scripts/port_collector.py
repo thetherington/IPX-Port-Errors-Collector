@@ -89,8 +89,7 @@ class PortCollector:
                 # instance back to base 1 for port number
                 _instance, _type = _id.split("@")
 
-                _instance = int(_instance)
-                _instance += 1
+                _instance = int(_instance) + 1
 
                 # convert integer to long notation since these numbers can be big
                 _type = "l" if _type == "i" else _type
@@ -121,9 +120,7 @@ class PortCollector:
         except Exception as error:
             print(error)
 
-        for _, params in ports.items():
-
-            port_key = params["i_port"]
+        for port_key, params in ports.items():
 
             # if port object exists in port_store, then update ports dict with delta values
             if port_key in self.port_store.keys():
