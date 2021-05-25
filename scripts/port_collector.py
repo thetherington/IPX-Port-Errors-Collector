@@ -29,9 +29,7 @@ class PortCollector:
                     for template in [self.input_error, self.output_error, self.port_label]:
 
                         template_copy = copy.deepcopy(template)
-                        template_copy["id"] = template_copy["id"].replace(
-                            "<replace>", str(port - 1)
-                        )
+                        template_copy["id"] = template_copy["id"].replace("<replace>", str(port - 1))
 
                         self.parameters.append(template_copy)
 
@@ -41,12 +39,7 @@ class PortCollector:
 
             with requests.Session() as session:
 
-                ## get the session ID from accessing the login.php site
-                resp = session.get(
-                    "http://%s/login.php" % self.address, verify=False, timeout=30.0,
-                )
-
-                sessionID = resp.headers["Set-Cookie"].split(";")[0]
+                session.auth = ("root", "evertz")
 
                 payload = {
                     "jsonrpc": "2.0",
@@ -55,15 +48,16 @@ class PortCollector:
                     "id": 1,
                 }
 
-                url = "http://%s/cgi-bin/cfgjsonrpc" % (self.address)
+                headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-                headers = {
-                    "content_type": "application/json",
-                    "Cookie": sessionID + "; webeasy-loggedin=true",
-                }
+                url = "http://%s/v.1.5/php/datas/cfgjsonrpc.php" % (self.address)
 
                 response = session.post(
-                    url, headers=headers, data=json.dumps(payload), verify=False, timeout=30.0,
+                    url,
+                    headers=headers,
+                    data=json.dumps(payload),
+                    verify=False,
+                    timeout=30.0,
                 )
 
                 return json.loads(response.text)
@@ -127,10 +121,8 @@ class PortCollector:
 
                 params.update(
                     {
-                        "l_input_errors_delta": params["l_input_errors"]
-                        - self.port_store[port_key]["l_input_errors"],
-                        "l_output_errors_delta": params["l_output_errors"]
-                        - self.port_store[port_key]["l_output_errors"],
+                        "l_input_errors_delta": params["l_input_errors"] - self.port_store[port_key]["l_input_errors"],
+                        "l_output_errors_delta": params["l_output_errors"] - self.port_store[port_key]["l_output_errors"],
                     }
                 )
 
@@ -147,7 +139,7 @@ class PortCollector:
 
 def main():
 
-    params = {"address": "172.16.140.14", "ports": [1, 3, 5, 7, 9, 11, 15, 20, 23, 25, 30]}
+    params = {"address": "172.16.140.62", "ports": [1, 3, 5, 7, 9, 11, 15, 20, 23, 25, 30]}
 
     ipx = PortCollector(**params)
 
