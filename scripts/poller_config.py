@@ -17,15 +17,15 @@ class Plugin(InsitePlugin):
 
         except Exception:
 
-            params = {"address": host, "ports": [1, 3, 5, 7, 9, 11, 15, 20, 23, 25, 30]}
+            params = {"address": host, "ports": [1, 3, "5 - 9", 11, 15, "20 - 23"], "type": "NATX"}  # // OR "type": "IPX"
 
             self.ipx = PortCollector(**params)
 
         documents = []
 
-        for port in self.ipx.collect():
+        for _, params in self.ipx.collect.items():
 
-            document = {"fields": port, "host": host, "name": "ipx"}
+            document = {"fields": params, "host": host, "name": "ipx"}
 
             documents.append(document)
 
